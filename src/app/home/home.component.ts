@@ -4,7 +4,7 @@ import 'rxjs/add/observable/interval';
 import {Observer} from 'rxjs/Observer';
 import {setTimeout} from 'timers';
 import {Subscription} from 'rxjs/Subscription';
-
+import 'rxjs/Rx' ;
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -13,15 +13,19 @@ import {Subscription} from 'rxjs/Subscription';
 export class HomeComponent implements OnInit, OnDestroy {
 
   numbersObsSubcription: Subscription;
-  customObsSubcription: Subscription ;
+  customObsSubcription: Subscription;
+
   constructor() {
   }
 
   ngOnInit() {
-    const myNumbers = Observable.interval(1000);
+    const myNumbers = Observable.interval(1000)
+      .map((data: number) => {
+        return data * 2;
+      });
     this.numbersObsSubcription = myNumbers.subscribe(
-      (number:number) =>{
-        console.log(number) ;
+      (number: number) => {
+        console.log(number);
       }
     );
 
@@ -38,19 +42,26 @@ export class HomeComponent implements OnInit, OnDestroy {
         observer.complete();
       }, 5000);
 
-      setTimeout(() =>{
-        observer.next('third package') ;
-      }, 6000) ;
+      setTimeout(() => {
+        observer.next('third package');
+      }, 6000);
     });
 
-     this.customObsSubcription = myObservable.subscribe(
-      (data: string) => {console.log(data); },
-      (error: string) => {console.log(error); },
-      () => {console.log('completed'); }
-      ); };
+    this.customObsSubcription = myObservable.subscribe(
+      (data: string) => {
+        console.log(data);
+      },
+      (error: string) => {
+        console.log(error);
+      },
+      () => {
+        console.log('completed');
+      }
+    );
+  };
 
-  ngOnDestroy(){
-      this.numbersObsSubcription.unsubscribe();
-      this.customObsSubcription.unsubscribe();
+  ngOnDestroy() {
+    this.numbersObsSubcription.unsubscribe();
+    this.customObsSubcription.unsubscribe();
   }
 }
